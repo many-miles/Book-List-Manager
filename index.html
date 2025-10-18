@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Book List Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f8fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 80%;
+      max-width: 700px;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      border-bottom: 1px solid #ddd;
+      padding: 12px 15px;
+      text-align: center;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: #f1f9ff;
+    }
+    form {
+      margin-top: 30px;
+      width: 80%;
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #34495e;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Book List Manager</h1>
+
+  <!-- Display Table -->
+  <table id="bookTable" aria-label="Book list table">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Year</th>
+        <th scope="col">Genre</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Update Form -->
+  <form id="updateForm" aria-label="Update book form">
+    <h2>Update Book</h2>
+    <label for="title">Title:
+      <input type="text" id="title" name="title" required />
+    </label>
+    <label for="author">Author:
+      <input type="text" id="author" name="author" required />
+    </label>
+    <label for="year">Year:
+      <input type="number" id="year" name="year" required min="0" />
+    </label>
+    <label for="genre">Genre:
+      <input type="text" id="genre" name="genre" required />
+    </label>
+    <button type="submit">Update</button>
+  </form>
+
+  <!-- Remove Form -->
+  <form id="removeForm" aria-label="Remove book form">
+    <h2>Remove Book</h2>
+    <label for="removeTitle">Title to remove:
+      <input type="text" id="removeTitle" name="removeTitle" required />
+    </label>
+    <button type="submit">Remove</button>
+  </form>
+
+<!-- JavaScript -->
+  <script>
+    let books = [
+      { title: "HTML and CSS", author: "Jon Duckett", year: 2011, genre: "Website Design" },
+      { title: "Pro Git", author: "Scott Chacon & Ben Straub", year: 2025, genre: "Git" },
+      { title: "Beginning JavaScript", author: "Russ Ferguson", year: 2019, genre: "JavaScript" }
+
+    ];
+
+    function displayBooks() {
+      const tableBody = document.querySelector("#bookTable tbody");
+      tableBody.innerHTML = "";
+      books.forEach(book => {
+        const row = `<tr>
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.year}</td>
+          <td>${book.genre}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    document.getElementById("updateForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const title = document.getElementById("title").value.trim();
+      const author = document.getElementById("author").value.trim();
+      const year = parseInt(document.getElementById("year").value);
+      const genre = document.getElementById("genre").value.trim();
+
+      if (!title || !author || isNaN(year) || !genre) {
+        alert("Please fill in all fields correctly.");
+        return;
+      }
+
+      const index = books.findIndex(b => b.title.toLowerCase() === title.toLowerCase());
+      if (index !== -1) {
+        books[index] = { title, author, year, genre };
+        alert("Book updated.");
+      } else {
+        books.push({ title, author, year, genre });
+        alert("New book added.");
+      }
+
+      displayBooks();
+      this.reset();
+    });
+
+    document.getElementById("removeForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const title = document.getElementById("removeTitle").value.trim();
+      const index = books.findIndex(b => b.title.toLowerCase() === title.toLowerCase());
+
+      if (index !== -1) {
+        books.splice(index, 1);
+        alert("Book removed.");
+        displayBooks();
+      } else {
+        alert("Book not found.");
+      }
+
+      this.reset();
+    });
+
+    displayBooks();
+  </script>
+</body>
+</html>
